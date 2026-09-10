@@ -57,7 +57,11 @@ app.get("/", (req, res) => {
 // ===============================
 
 app.get("/api/perguntas", (req, res) => {
-    res.json(bancoPerguntas);
+    const perguntasSorteadas = [...bancoPerguntas]
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 20);
+
+    res.json(perguntasSorteadas);
 });
 
 // ===============================
