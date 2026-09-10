@@ -5,7 +5,7 @@
 const SUPABASE_URL = "https://ootnndpvyhnoskfpdlgv.supabase.co";
 const SUPABASE_KEY = "sb_publishable_DZjEvBr8mbfdLHlE4bk2Og_IfFedOt7";
 
-const supabase = window.supabase.createClient(
+const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_KEY
 );
@@ -88,7 +88,7 @@ async function cadastrarUsuario() {
 
         // Cria a conta no Supabase Auth
         const { data, error } =
-            await supabase.auth.signUp({
+            await supabaseClient.auth.signUp({
 
                 email: email,
 
@@ -193,7 +193,7 @@ async function entrarUsuario() {
     try {
 
         const { data, error } =
-            await supabase.auth.signInWithPassword({
+            await supabaseClient.auth.signInWithPassword({
 
                 email: email,
 
