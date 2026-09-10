@@ -2,8 +2,257 @@
 // CONFIGURAÇÃO DA API
 // =====================================================
 
-const API_URL = "https://quiz-bcvk.onrender.com/api";
+const SUPABASE_URL = "https://ootnndpvyhnoskfpdlgv.supabase.co";
+const SUPABASE_KEY = "sb_publishable_DZjEvBr8mbfdLHlE4bk2Og_IfFedOt7";
 
+const supabase = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+// =====================================================
+// LOGIN E CADASTRO
+// =====================================================
+
+function mostrarLogin() {
+
+    document.getElementById("areaCadastro").style.display =
+        "none";
+
+    document.getElementById("areaLogin").style.display =
+        "block";
+
+    document.getElementById("textoLogin").textContent =
+        "Entre na sua conta para jogar.";
+
+}
+
+
+function mostrarCadastro() {
+
+    document.getElementById("areaLogin").style.display =
+        "none";
+
+    document.getElementById("areaCadastro").style.display =
+        "block";
+
+    document.getElementById("textoLogin").textContent =
+        "Crie sua conta para começar.";
+
+}
+
+
+// =====================================================
+// CADASTRAR USUÁRIO
+// =====================================================
+
+async function cadastrarUsuario() {
+
+    const username =
+        document.getElementById("username")
+            .value
+            .trim();
+
+    const email =
+        document.getElementById("email")
+            .value
+            .trim();
+
+    const senha =
+        document.getElementById("senha")
+            .value;
+
+
+    if (!username || !email || !senha) {
+
+        alert(
+            "Preencha todos os campos."
+        );
+
+        return;
+
+    }
+
+
+    if (senha.length < 6) {
+
+        alert(
+            "A senha deve ter pelo menos 6 caracteres."
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        // Cria a conta no Supabase Auth
+        const { data, error } =
+            await supabase.auth.signUp({
+
+                email: email,
+
+                password: senha
+
+            });
+
+
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        if (!data.user) {
+
+            throw new Error(
+                "Não foi possível criar o usuário."
+            );
+
+        }
+
+
+        // Salva o nome de usuário na tabela profiles
+        const { error: erroPerfil } =
+            await supabase
+                .from("profiles")
+                .insert({
+
+                    id: data.user.id,
+
+                    username: username
+
+                });
+
+
+        if (erroPerfil) {
+
+            throw erroPerfil;
+
+        }
+
+
+        alert(
+            "Conta criada com sucesso!"
+        );
+
+
+        document.getElementById("emailLogin").value =
+            email;
+
+
+        mostrarLogin();
+
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao cadastrar:",
+            erro
+        );
+
+
+        alert(
+            "Não foi possível criar a conta: " +
+            erro.message
+        );
+
+    }
+
+}
+
+
+// =====================================================
+// ENTRAR NA CONTA
+// =====================================================
+
+async function entrarUsuario() {
+
+    const email =
+        document.getElementById("emailLogin")
+            .value
+            .trim();
+
+    const senha =
+        document.getElementById("senhaLogin")
+            .value;
+
+
+    if (!email || !senha) {
+
+        alert(
+            "Digite seu e-mail e sua senha."
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        const { data, error } =
+            await supabase.auth.signInWithPassword({
+
+                email: email,
+
+                password: senha
+
+            });
+
+
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        // Busca o perfil do usuário
+        const { data: perfil, error: erroPerfil } =
+            await supabase
+                .from("profiles")
+                .select("username")
+                .eq("id", data.user.id)
+                .single();
+
+
+        if (erroPerfil) {
+
+            throw erroPerfil;
+
+        }
+
+
+        // Usa o nome do perfil no quiz
+        nomeJogador =
+            perfil.username;
+
+
+        alert(
+            "Login realizado com sucesso!"
+        );
+
+
+        mostrarTela("inicio");
+
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao entrar:",
+            erro
+        );
+
+
+        alert(
+            "E-mail ou senha incorretos."
+        );
+
+    }
+
+}
 // =====================================================
 // BANCO DE PERGUNTAS
 // As perguntas agora vêm da API

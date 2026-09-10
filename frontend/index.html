@@ -15,9 +15,90 @@
             <h1>Quiz Educação Física & Saúde</h1>
             <p>Teste seus conhecimentos e conquiste o topo do ranking!</p>
         </header>
+<!-- ============================= -->
+<!-- TELA DE LOGIN / CADASTRO -->
+<!-- ============================= -->
 
+<section id="login" class="tela ativa">
+
+    <h2>Entrar no Quiz</h2>
+
+    <p id="textoLogin">
+        Entre na sua conta para jogar.
+    </p>
+
+    <!-- CADASTRO -->
+    <div id="areaCadastro">
+
+        <input
+            type="text"
+            id="username"
+            placeholder="Nome de usuário"
+        >
+
+        <input
+            type="email"
+            id="email"
+            placeholder="Seu e-mail"
+        >
+
+        <input
+            type="password"
+            id="senha"
+            placeholder="Sua senha"
+        >
+
+        <button onclick="cadastrarUsuario()">
+            Criar conta
+        </button>
+
+        <p>
+            Já possui uma conta?
+            <button
+                type="button"
+                onclick="mostrarLogin()"
+            >
+                Entrar
+            </button>
+        </p>
+
+    </div>
+
+
+    <!-- LOGIN -->
+    <div id="areaLogin" style="display: none;">
+
+        <input
+            type="email"
+            id="emailLogin"
+            placeholder="Seu e-mail"
+        >
+
+        <input
+            type="password"
+            id="senhaLogin"
+            placeholder="Sua senha"
+        >
+
+        <button onclick="entrarUsuario()">
+            Entrar
+        </button>
+
+        <p>
+            Ainda não possui conta?
+            <button
+                type="button"
+                onclick="mostrarCadastro()"
+            >
+                Criar conta
+            </button>
+        </p>
+
+    </div>
+
+</section>
         <!-- TELA INICIAL -->
-        <section id="inicio" class="tela ativa">
+        <section id="inicio" class="tela">
             <h2>Bem-vindo ao Quiz!</h2>
 
             <p>
@@ -102,7 +183,8 @@
 
     </div>
 
-    <script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
 
 </body>
 </html>
