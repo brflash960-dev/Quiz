@@ -2,8 +2,7 @@
 // CONFIGURAÇÃO DA API
 // =====================================================
 
-const API_URL = "http://localhost:3000/api";
-
+const API_URL = "https://quiz-bcvk.onrender.com/api";
 
 // =====================================================
 // BANCO DE PERGUNTAS

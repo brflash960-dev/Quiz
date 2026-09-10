@@ -1,93 +1,101 @@
-const express = require("express");
-const cors = require("cors");
-const { createClient } = require("@supabase/supabase-js");
 require("dotenv").config();
 
-const app = express();
+const express = require("express");
+const cors = require("cors");
+const path = require("path");
+const { createClient } = require("@supabase/supabase-js");
 
+const app = express();
 const PORTA = process.env.PORT || 3000;
+
+// Verifica se as informações do Supabase existem
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SECRET_KEY) {
+    console.error("ERRO: As variáveis do Supabase não foram configuradas.");
+    process.exit(1);
+}
+
+// Conexão com o Supabase
+const supabase = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SECRET_KEY
+);
 
 app.use(cors());
 app.use(express.json());
 
+// Caminho da pasta frontend
+const caminhoFrontend = path.join(__dirname, "..", "frontend");
+app.use(express.static(caminhoFrontend));
 
-// ===============================
-// CONEXÃO COM O SUPABASE
-// ===============================
+app.get("/", (req, res) => {
+    res.sendFile(path.join(caminhoFrontend, "index.html"));
+});
 
-const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_PUBLISHABLE_KEY
-);
+// Faz o servidor abrir o site do quiz
+app.use(express.static(caminhoFrontend));
 
+// ROTA PRINCIPAL
+app.get("/", (req, res) => {
+    res.sendFile(path.join(caminhoFrontend, "index.html"));
+});
+// Faz o servidor abrir o site do quiz
+app.use(express.static(caminhoFrontend));
+
+// Importa as perguntas
+const bancoPerguntas = require("./perguntas");
 
 // ===============================
 // ROTA PRINCIPAL
 // ===============================
 
 app.get("/", (req, res) => {
-    res.json({
-        mensagem: "API do Quiz de Educação Física e Saúde funcionando!"
-    });
+    res.sendFile(path.join(caminhoFrontend, "index.html"));
 });
 
-
 // ===============================
-// PERGUNTAS
+// API DE PERGUNTAS
 // ===============================
-
-const bancoPerguntas = require("./perguntas");
 
 app.get("/api/perguntas", (req, res) => {
     res.json(bancoPerguntas);
 });
 
-
 // ===============================
-// BUSCAR RANKING
+// API DO RANKING - BUSCAR
 // ===============================
 
 app.get("/api/ranking", async (req, res) => {
-
     try {
-
         const { data, error } = await supabase
             .from("ranking")
             .select("*")
-            .order("pontos", {
-                ascending: false
-            })
+            .order("pontos", { ascending: false })
             .limit(10);
 
         if (error) {
             console.error("Erro ao buscar ranking:", error);
-
             return res.status(500).json({
                 erro: "Não foi possível carregar o ranking."
             });
         }
 
-        res.json(data);
+        res.json(data || []);
 
     } catch (erro) {
-
-        console.error(erro);
+        console.error("Erro:", erro);
 
         res.status(500).json({
-            erro: "Erro interno do servidor."
+            erro: "Erro interno ao carregar o ranking."
         });
     }
 });
 
-
 // ===============================
-// SALVAR RESULTADO
+// API DO RANKING - SALVAR
 // ===============================
 
 app.post("/api/ranking", async (req, res) => {
-
     try {
-
         const {
             nome,
             pontos,
@@ -95,86 +103,51 @@ app.post("/api/ranking", async (req, res) => {
             totalPerguntas
         } = req.body;
 
-
-        // Verificar os dados recebidos
-
-        if (
-            !nome ||
-            typeof pontos !== "number"
-        ) {
-
+        // Verificação dos dados
+        if (!nome || typeof pontos !== "number") {
             return res.status(400).json({
                 erro: "Nome e pontuação são obrigatórios."
             });
         }
 
-
-        // Criar resultado
-
-        const novoResultado = {
-            nome: nome,
-            pontos: pontos,
-            acertos: typeof acertos === "number"
-                ? acertos
-                : 0,
-            total_perguntas:
-                typeof totalPerguntas === "number"
-                    ? totalPerguntas
-                    : 0
-        };
-
-
-        // Salvar no Supabase
-
+        // Salva no Supabase
         const { data, error } = await supabase
             .from("ranking")
-            .insert([novoResultado])
-            .select();
-
+            .insert({
+                nome: nome.trim(),
+                pontos: pontos,
+                acertos: acertos || 0,
+                total_perguntas: totalPerguntas || 0
+            })
+            .select()
+            .single();
 
         if (error) {
-
-            console.error(
-                "Erro ao salvar resultado:",
-                error
-            );
+            console.error("Erro ao salvar ranking:", error);
 
             return res.status(500).json({
                 erro: "Não foi possível salvar o resultado."
             });
         }
 
-
-        // Retornar resultado salvo
-
         res.status(201).json({
             mensagem: "Resultado salvo com sucesso!",
-            resultado: data[0]
+            resultado: data
         });
 
     } catch (erro) {
-
-        console.error(erro);
+        console.error("Erro:", erro);
 
         res.status(500).json({
-            erro: "Erro interno do servidor."
+            erro: "Erro interno ao salvar o resultado."
         });
     }
 });
-
 
 // ===============================
 // INICIAR SERVIDOR
 // ===============================
 
-app.listen(
-    PORTA,
-    "0.0.0.0",
-    () => {
-
-        console.log(
-            `API funcionando na porta ${PORTA}`
-        );
-
-    }
-);
+app.listen(PORTA, "0.0.0.0", () => {
+    console.log(`Servidor funcionando na porta ${PORTA}`);
+});
