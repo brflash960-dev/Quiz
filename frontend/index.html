@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Educação Física e Saúde</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <header>
+            <h1>Quiz Educação Física & Saúde</h1>
+            <p>Teste seus conhecimentos e conquiste o topo do ranking!</p>
+        </header>
+
+        <!-- TELA INICIAL -->
+        <section id="inicio" class="tela ativa">
+            <h2>Bem-vindo ao Quiz!</h2>
+
+            <p>
+                Responda perguntas sobre esportes, anatomia,
+                exercícios, alimentação e qualidade de vida.
+            </p>
+
+            <input 
+                type="text" 
+                id="nomeJogador" 
+                placeholder="Digite seu nome"
+            >
+
+            <button onclick="iniciarQuiz()">Começar Quiz</button>
+
+            <button class="secundario" onclick="mostrarRanking()">
+                Ver Ranking
+            </button>
+        </section>
+
+        <!-- TELA DO QUIZ -->
+        <section id="quiz" class="tela">
+
+            <div class="informacoes">
+                <span id="numeroPergunta">Pergunta 1/10</span>
+                <span id="pontuacao">Pontos: 0</span>
+            </div>
+
+            <div class="barra">
+                <div id="progresso"></div>
+            </div>
+
+            <h2 id="pergunta"></h2>
+
+            <div id="alternativas"></div>
+
+            <button id="proxima" onclick="proximaPergunta()" disabled>
+                Próxima pergunta
+            </button>
+
+        </section>
+
+        <!-- TELA FINAL -->
+        <section id="resultado" class="tela">
+
+            <h2>Quiz finalizado!</h2>
+
+            <p id="mensagemResultado"></p>
+
+            <div class="resultado-box">
+                <h3 id="nomeResultado"></h3>
+                <p id="pontuacaoFinal"></p>
+                <p id="acertosFinal"></p>
+            </div>
+
+            <button onclick="salvarResultado()">
+                Salvar no Ranking
+            </button>
+
+            <button class="secundario" onclick="voltarInicio()">
+                Jogar novamente
+            </button>
+
+            <button class="secundario" onclick="mostrarRanking()">
+                Ver Ranking
+            </button>
+
+        </section>
+
+        <!-- RANKING -->
+        <section id="ranking" class="tela">
+
+            <h2>Ranking</h2>
+
+            <div id="listaRanking"></div>
+
+            <button onclick="voltarInicio()">
+                Voltar
+            </button>
+
+        </section>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>

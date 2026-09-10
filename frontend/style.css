@@ -1,0 +1,207 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #0f172a, #166534);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 700px;
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+header h1 {
+    color: #166534;
+    margin-bottom: 8px;
+}
+
+header p {
+    color: #666;
+}
+
+.tela {
+    display: none;
+}
+
+.tela.ativa {
+    display: block;
+}
+
+.tela h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #222;
+}
+
+.tela p {
+    text-align: center;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #16a34a;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.2s;
+}
+
+button:hover {
+    background: #15803d;
+    transform: translateY(-1px);
+}
+
+button:disabled {
+    background: #aaa;
+    cursor: not-allowed;
+    transform: none;
+}
+
+button.secundario {
+    background: #334155;
+}
+
+.informacoes {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: #166534;
+}
+
+.barra {
+    width: 100%;
+    height: 10px;
+    background: #ddd;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    overflow: hidden;
+}
+
+#progresso {
+    height: 100%;
+    width: 0%;
+    background: #16a34a;
+    transition: 0.3s;
+}
+
+#pergunta {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.alternativa {
+    width: 100%;
+    padding: 15px;
+    background: #f8fafc;
+    color: #222;
+    border: 2px solid #ddd;
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.alternativa:hover {
+    background: #f0fdf4;
+    border-color: #16a34a;
+}
+
+.alternativa.correta {
+    background: #dcfce7;
+    border-color: #16a34a;
+}
+
+.alternativa.errada {
+    background: #fee2e2;
+    border-color: #dc2626;
+}
+
+.resultado-box {
+    background: #f1f5f9;
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.resultado-box h3 {
+    color: #166534;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+#listaRanking {
+    margin-bottom: 20px;
+}
+
+.jogador-ranking {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 10px;
+    background: #f1f5f9;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.posicao {
+    color: #166534;
+    font-size: 20px;
+}
+
+.sem-ranking {
+    text-align: center;
+    color: #777;
+    padding: 20px;
+}
+
+@media (max-width: 600px) {
+
+    .container {
+        padding: 20px;
+    }
+
+    header h1 {
+        font-size: 25px;
+    }
+
+    .informacoes {
+        font-size: 14px;
+    }
+
+}
