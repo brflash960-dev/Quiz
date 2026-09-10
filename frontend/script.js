@@ -1,6 +1,7 @@
 // =====================================================
 // CONFIGURAÇÃO DA API
 // =====================================================
+const API_URL = "https://quiz-bcvk.onrender.com/api";
 
 const SUPABASE_URL = "https://ootnndpvyhnoskfpdlgv.supabase.co";
 const SUPABASE_KEY = "sb_publishable_DZjEvBr8mbfdLHlE4bk2Og_IfFedOt7";
