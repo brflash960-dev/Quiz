@@ -116,7 +116,7 @@ async function cadastrarUsuario() {
 
         // Salva o nome de usuário na tabela profiles
         const { error: erroPerfil } =
-            await supabase
+            await supabaseClient
                 .from("profiles")
                 .insert({
 
