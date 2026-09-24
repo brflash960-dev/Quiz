@@ -88,14 +88,16 @@ async function cadastrarUsuario() {
     try {
 
         // Cria a conta no Supabase Auth
-        const { data, error } =
-            await supabaseClient.auth.signUp({
-
-                email: email,
-
-                password: senha
-
-            });
+       const { data, error } =
+    await supabaseClient.auth.signUp({
+        email: email,
+        password: senha,
+        options: {
+            data: {
+                username: username
+            }
+        }
+    });
 
 
         if (error) {
@@ -115,24 +117,7 @@ async function cadastrarUsuario() {
 
 
         // Salva o nome de usuário na tabela profiles
-        const { error: erroPerfil } =
-            await supabaseClient
-                .from("profiles")
-                .insert({
-
-                    id: data.user.id,
-
-                    username: username
-
-                });
-
-
-        if (erroPerfil) {
-
-            throw erroPerfil;
-
-        }
-
+      
 
         alert(
             "Conta criada com sucesso!"
