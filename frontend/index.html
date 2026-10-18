@@ -8,97 +8,93 @@
 </head>
 
 <body>
-
     <div class="container">
 
         <header>
-            <h1>Quiz Educação Física & Saúde</h1>
+            <h1>Quiz Educação Física &amp; Saúde</h1>
             <p>Teste seus conhecimentos e conquiste o topo do ranking!</p>
         </header>
-<!-- ============================= -->
-<!-- TELA DE LOGIN / CADASTRO -->
-<!-- ============================= -->
 
-<section id="login" class="tela ativa">
+        <!-- TELA DE LOGIN / CADASTRO -->
+        <section id="login" class="tela ativa">
 
-    <h2>Entrar no Quiz</h2>
+            <h2>Entrar no Quiz</h2>
 
-    <p id="textoLogin">
-        Entre na sua conta para jogar.
-    </p>
+            <p id="textoLogin">
+                Entre na sua conta para jogar.
+            </p>
 
-    <!-- CADASTRO -->
-    <div id="areaCadastro">
+            <!-- CADASTRO -->
+            <div id="areaCadastro" style="display: none;">
 
-        <input
-            type="text"
-            id="username"
-            placeholder="Nome de usuário"
-        >
+                <input
+                    type="text"
+                    id="username"
+                    placeholder="Nome de usuário"
+                    autocomplete="username"
+                >
 
-        <input
-            type="email"
-            id="email"
-            placeholder="Seu e-mail"
-        >
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Seu e-mail"
+                    autocomplete="email"
+                >
 
-        <input
-            type="password"
-            id="senha"
-            placeholder="Sua senha"
-        >
+                <input
+                    type="password"
+                    id="senha"
+                    placeholder="Sua senha"
+                    autocomplete="new-password"
+                >
 
-        <button onclick="cadastrarUsuario()">
-            Criar conta
-        </button>
+                <button type="button" onclick="cadastrarUsuario()">
+                    Criar conta
+                </button>
 
-        <p>
-            Já possui uma conta?
-            <button
-                type="button"
-                onclick="mostrarLogin()"
-            >
-                Entrar
-            </button>
-        </p>
+                <p>
+                    Já possui uma conta?
+                    <button type="button" onclick="mostrarLogin()">
+                        Entrar
+                    </button>
+                </p>
 
-    </div>
+            </div>
 
+            <!-- LOGIN -->
+            <div id="areaLogin">
 
-    <!-- LOGIN -->
-    <div id="areaLogin" style="display: none;">
+                <input
+                    type="text"
+                    id="emailLogin"
+                    placeholder="Nome de usuário"
+                    autocomplete="username"
+                >
 
-        <input
-            type="email"
-            id="emailLogin"
-            placeholder="Seu e-mail"
-        >
+                <input
+                    type="password"
+                    id="senhaLogin"
+                    placeholder="Sua senha"
+                    autocomplete="current-password"
+                >
 
-        <input
-            type="password"
-            id="senhaLogin"
-            placeholder="Sua senha"
-        >
+                <button type="button" onclick="entrarUsuario()">
+                    Entrar
+                </button>
 
-        <button onclick="entrarUsuario()">
-            Entrar
-        </button>
+                <p>
+                    Ainda não possui conta?
+                    <button type="button" onclick="mostrarCadastro()">
+                        Criar conta
+                    </button>
+                </p>
 
-        <p>
-            Ainda não possui conta?
-            <button
-                type="button"
-                onclick="mostrarCadastro()"
-            >
-                Criar conta
-            </button>
-        </p>
+            </div>
+        </section>
 
-    </div>
-
-</section>
         <!-- TELA INICIAL -->
         <section id="inicio" class="tela">
+
             <h2>Bem-vindo ao Quiz!</h2>
 
             <p>
@@ -106,24 +102,27 @@
                 exercícios, alimentação e qualidade de vida.
             </p>
 
-            <input 
-                type="text" 
-                id="nomeJogador" 
-                placeholder="Digite seu nome"
+            <!-- O nome será utilizado automaticamente após o login -->
+
+            <button type="button" onclick="iniciarQuiz()">
+                Começar Quiz
+            </button>
+
+            <button
+                type="button"
+                class="secundario"
+                onclick="mostrarRanking()"
             >
-
-            <button onclick="iniciarQuiz()">Começar Quiz</button>
-
-            <button class="secundario" onclick="mostrarRanking()">
                 Ver Ranking
             </button>
+
         </section>
 
         <!-- TELA DO QUIZ -->
         <section id="quiz" class="tela">
 
             <div class="informacoes">
-                <span id="numeroPergunta">Pergunta 1/10</span>
+                <span id="numeroPergunta">Pergunta 1/20</span>
                 <span id="pontuacao">Pontos: 0</span>
             </div>
 
@@ -135,7 +134,12 @@
 
             <div id="alternativas"></div>
 
-            <button id="proxima" onclick="proximaPergunta()" disabled>
+            <button
+                type="button"
+                id="proxima"
+                onclick="proximaPergunta()"
+                disabled
+            >
                 Próxima pergunta
             </button>
 
@@ -154,15 +158,23 @@
                 <p id="acertosFinal"></p>
             </div>
 
-            <button onclick="salvarResultado()">
+            <button type="button" onclick="salvarResultado()">
                 Salvar no Ranking
             </button>
 
-            <button class="secundario" onclick="voltarInicio()">
+            <button
+                type="button"
+                class="secundario"
+                onclick="voltarInicio()"
+            >
                 Jogar novamente
             </button>
 
-            <button class="secundario" onclick="mostrarRanking()">
+            <button
+                type="button"
+                class="secundario"
+                onclick="mostrarRanking()"
+            >
                 Ver Ranking
             </button>
 
@@ -175,7 +187,7 @@
 
             <div id="listaRanking"></div>
 
-            <button onclick="voltarInicio()">
+            <button type="button" onclick="voltarInicio()">
                 Voltar
             </button>
 
@@ -183,8 +195,8 @@
 
     </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
 
 </body>
 </html>

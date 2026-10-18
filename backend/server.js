@@ -1,156 +1,63 @@
-require("dotenv").config();
-
-const express = require("express");
-const cors = require("cors");
-const path = require("path");
-const { createClient } = require("@supabase/supabase-js");
-
-const app = express();
-const PORTA = process.env.PORT || 3000;
-
-// Verifica se as informações do Supabase existem
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SECRET_KEY) {
-    console.error("ERRO: As variáveis do Supabase não foram configuradas.");
-    process.exit(1);
-}
-
-// Conexão com o Supabase
-const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SECRET_KEY
-);
-
-app.use(cors());
-app.use(express.json());
-
-// Caminho da pasta frontend
-const caminhoFrontend = path.join(__dirname, "..", "frontend");
-app.use(express.static(caminhoFrontend));
-
-app.get("/", (req, res) => {
-    res.sendFile(path.join(caminhoFrontend, "index.html"));
-});
-
-// Faz o servidor abrir o site do quiz
-app.use(express.static(caminhoFrontend));
-
-// ROTA PRINCIPAL
-app.get("/", (req, res) => {
-    res.sendFile(path.join(caminhoFrontend, "index.html"));
-});
-// Faz o servidor abrir o site do quiz
-app.use(express.static(caminhoFrontend));
-
-// Importa as perguntas
-const bancoPerguntas = require("./perguntas");
-
-// ===============================
-// ROTA PRINCIPAL
-// ===============================
-
-app.get("/", (req, res) => {
-    res.sendFile(path.join(caminhoFrontend, "index.html"));
-});
-
-// ===============================
-// API DE PERGUNTAS
-// ===============================
-
-app.get("/api/perguntas", (req, res) => {
-    const perguntasSorteadas = [...bancoPerguntas]
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 20);
-
-    res.json(perguntasSorteadas);
-});
-
-// ===============================
-// API DO RANKING - BUSCAR
-// ===============================
-
-app.get("/api/ranking", async (req, res) => {
+app.post("/api/buscar-usuario", async (req, res) => {
     try {
-        const { data, error } = await supabase
-            .from("ranking")
-            .select("*")
-            .order("pontos", { ascending: false })
-            .limit(10);
+        const username = String(
+            req.body.username || ""
+        ).trim();
 
-        if (error) {
-            console.error("Erro ao buscar ranking:", error);
-            return res.status(500).json({
-                erro: "Não foi possível carregar o ranking."
-            });
-        }
-
-        res.json(data || []);
-
-    } catch (erro) {
-        console.error("Erro:", erro);
-
-        res.status(500).json({
-            erro: "Erro interno ao carregar o ranking."
-        });
-    }
-});
-
-// ===============================
-// API DO RANKING - SALVAR
-// ===============================
-
-app.post("/api/ranking", async (req, res) => {
-    try {
-        const {
-            nome,
-            pontos,
-            acertos,
-            totalPerguntas
-        } = req.body;
-
-        // Verificação dos dados
-        if (!nome || typeof pontos !== "number") {
+        if (!username) {
             return res.status(400).json({
-                erro: "Nome e pontuação são obrigatórios."
+                erro: "Digite seu nome de usuário."
             });
         }
 
-        // Salva no Supabase
-        const { data, error } = await supabase
-            .from("ranking")
-            .insert({
-                nome: nome.trim(),
-                pontos: pontos,
-                acertos: acertos || 0,
-                total_perguntas: totalPerguntas || 0
-            })
-            .select()
-            .single();
+        // Procura o nome de usuário cadastrado
+        const { data: perfil, error } = await supabase
+            .from("profiles")
+            .select("id")
+            .eq("username", username)
+            .maybeSingle();
 
         if (error) {
-            console.error("Erro ao salvar ranking:", error);
+            throw error;
+        }
 
-            return res.status(500).json({
-                erro: "Não foi possível salvar o resultado."
+        if (!perfil) {
+            return res.status(404).json({
+                erro: "Usuário não encontrado."
             });
         }
 
-        res.status(201).json({
-            mensagem: "Resultado salvo com sucesso!",
-            resultado: data
+        // Recupera o e-mail associado à conta
+        const { data, error: erroAuth } =
+            await supabase.auth.admin.getUserById(
+                perfil.id
+            );
+
+        if (erroAuth) {
+            throw erroAuth;
+        }
+
+        if (!data.user || !data.user.email) {
+            return res.status(404).json({
+                erro: "Conta não encontrada."
+            });
+        }
+
+        res.json({
+            email: data.user.email
         });
 
     } catch (erro) {
-        console.error("Erro:", erro);
+        console.error(
+            "Erro ao buscar usuário:",
+            erro
+        );
 
         res.status(500).json({
-            erro: "Erro interno ao salvar o resultado."
+            erro: "Não foi possível verificar o usuário."
         });
     }
 });
-
-// ===============================
-// INICIAR SERVIDOR
-// ===============================
 
 app.listen(PORTA, "0.0.0.0", () => {
     console.log(`Servidor funcionando na porta ${PORTA}`);
