@@ -356,29 +356,47 @@ function finalizarQuiz() {
 // =====================================================
 async function salvarResultado() {
     try {
+        const { data: sessaoData, error: sessaoError } =
+            await supabaseClient.auth.getSession();
+
+        if (sessaoError || !sessaoData.session) {
+            console.error("Usuário não está conectado:", sessaoError);
+            alert("Sua sessão expirou. Entre na sua conta novamente.");
+            return;
+        }
+
+        const accessToken = sessaoData.session.access_token;
+
         const resposta = await fetch(`${API_URL}/ranking`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify({
                 nome: nomeJogador,
                 pontos,
                 acertos,
-                totalPerguntas: perguntas.length
+                totalPerguntas: perguntas.length,
+                accessToken
             })
         });
 
         const dados = await resposta.json();
 
         if (!resposta.ok) {
-            throw new Error(dados.erro || "Erro ao salvar resultado.");
+            console.error("Erro ao salvar resultado:", dados);
+            alert(dados.erro || "Não foi possível salvar sua pontuação.");
+            return;
         }
 
-        alert("Resultado salvo no ranking!");
-        mostrarRanking();
+        console.log("Resultado do ranking:", dados);
 
+        if (dados.mensagem) {
+            console.log(dados.mensagem);
+        }
     } catch (erro) {
-        console.error(erro);
-        alert("Não foi possível salvar o resultado.");
+        console.error("Erro ao salvar resultado:", erro);
+        alert("Não foi possível conectar ao servidor para salvar sua pontuação.");
     }
 }
 
