@@ -197,7 +197,7 @@ async function entrarUsuario() {
 
         // Busca o perfil do usuário
         const { data: perfil, error: erroPerfil } =
-            await supabase
+            await supabaseClient
                 .from("profiles")
                 .select("username")
                 .eq("id", data.user.id)
